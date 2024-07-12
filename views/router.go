@@ -1,20 +1,18 @@
-package router
+package views
 
 import (
 	"bytes"
 	"fmt"
 	"io"
 
-	"github.com/thoughtgears/dota2-tracker/internal/dota"
-
 	"github.com/gin-contrib/logger"
 	"github.com/gin-gonic/gin"
+	"github.com/jasonodonnell/go-opendota"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
-	"github.com/thoughtgears/dota2-tracker/views"
 )
 
-func NewRouter(client *dota.Client, debug bool) (*gin.Engine, error) {
+func NewRouter(client *opendota.Client, debug bool) (*gin.Engine, error) {
 	router := gin.New()
 	router.Use(gin.Recovery(), logger.SetLogger(
 		logger.WithLogger(func(_ *gin.Context, l zerolog.Logger) zerolog.Logger {
@@ -31,7 +29,7 @@ func NewRouter(client *dota.Client, debug bool) (*gin.Engine, error) {
 	}
 
 	router.LoadHTMLGlob("templates/**/*.gohtml")
-	router.GET("/", views.GetIndex(client))
+	router.GET("/", GetIndex(client))
 
 	return router, nil
 }
