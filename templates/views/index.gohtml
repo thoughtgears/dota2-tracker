@@ -1,0 +1,49 @@
+{{template "header.gohtml" .}}
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">Dota 2 Tracker</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="#">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Features</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Pricing</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="container mt-5">
+  <h1>Welcome to Dota 2 Tracker</h1>
+  <p class="lead">Track your Dota 2 games and statistics.</p>
+
+  <h2>Pro Matches</h2>
+  <ul class="list-group">
+      {{range .matches}}
+        <li class="list-group-item">
+          <h5>{{.RadiantName}} vs {{.DireName}}</h5>
+          <p>Match ID: {{.MatchId}}</p>
+          <p>Duration: {{.Duration}} seconds</p>
+          <p>League: {{.LeagueName}}</p>
+          <p>Score: Radiant {{.RadiantScore}} - Dire {{.DireScore}}</p>
+          <p>Radiant Win: {{.RadiantWin}}</p>
+        </li>
+      {{else}}
+        <li class="list-group-item">No pro matches available.</li>
+      {{end}}
+  </ul>
+</div>
+
+{{template "footer.gohtml" .}}

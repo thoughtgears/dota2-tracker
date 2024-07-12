@@ -1,0 +1,14 @@
+version: 3
+
+dotenv: ['.env', '{{.ENV}}/.env.', '{{.HOME}}/.env']
+
+tasks:
+  default:
+    cmd: task --list
+
+  dev:
+    desc: Run development server
+    cmd: go run .
+    env:
+      DEBUG: true
+      LOCAL: true
