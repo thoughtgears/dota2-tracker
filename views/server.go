@@ -5,33 +5,43 @@ import (
 	"fmt"
 	"io"
 
+	"github.com/thoughtgears/dota2-tracker/internal/dota"
+
 	"github.com/gin-contrib/logger"
 	"github.com/gin-gonic/gin"
-	"github.com/jasonodonnell/go-opendota"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 )
 
-func NewRouter(client *opendota.Client, debug bool) (*gin.Engine, error) {
-	router := gin.New()
-	router.Use(gin.Recovery(), logger.SetLogger(
+type Server struct {
+	Router     *gin.Engine
+	dotaClient *dota.Client
+}
+
+func NewServer(client *dota.Client, debug bool) (*Server, error) {
+	server := &Server{
+		Router:     gin.New(),
+		dotaClient: client,
+	}
+
+	server.Router.Use(gin.Recovery(), logger.SetLogger(
 		logger.WithLogger(func(_ *gin.Context, l zerolog.Logger) zerolog.Logger {
 			return l.Output(gin.DefaultWriter).With().Logger()
 		}),
 	))
 
-	if err := router.SetTrustedProxies(nil); err != nil {
+	if err := server.Router.SetTrustedProxies(nil); err != nil {
 		return nil, fmt.Errorf("failed to set trusted proxies: %w", err)
 	}
 
 	if debug {
-		router.Use(debugLogger())
+		server.Router.Use(debugLogger())
 	}
 
-	router.LoadHTMLGlob("templates/**/*.gohtml")
-	router.GET("/", GetIndex(client))
+	server.Router.LoadHTMLGlob("templates/**/*.gohtml")
+	server.Router.GET("/", server.GetIndex)
 
-	return router, nil
+	return server, nil
 }
 
 func debugLogger() gin.HandlerFunc {

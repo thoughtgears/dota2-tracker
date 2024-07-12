@@ -2,13 +2,13 @@ package main
 
 import (
 	"fmt"
-	"net/http"
 	"time"
+
+	"github.com/thoughtgears/dota2-tracker/internal/dota"
 
 	"github.com/thoughtgears/dota2-tracker/views"
 
 	"github.com/gin-gonic/gin"
-	"github.com/jasonodonnell/go-opendota"
 	"github.com/kelseyhightower/envconfig"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
@@ -44,12 +44,12 @@ func init() {
 }
 
 func main() {
-	client := opendota.NewClient(&http.Client{Timeout: 10 * time.Second})
-	r, err := views.NewRouter(client, config.Debug)
+	client := dota.NewClient()
+	server, err := views.NewServer(client, config.Debug)
 	if err != nil {
 		log.Fatal().Err(err).Msg("failed to create router")
 	}
 
 	log.Info().Msg("server started")
-	log.Fatal().Err(r.Run(fmt.Sprintf("%s:%s", config.host, config.Port))).Msg("server stopped")
+	log.Fatal().Err(server.Router.Run(fmt.Sprintf("%s:%s", config.host, config.Port))).Msg("server stopped")
 }
